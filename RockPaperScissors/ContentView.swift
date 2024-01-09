@@ -8,29 +8,31 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var handOptions = ["🖐️", "✊", "✌️"]
-    @State private var handChoice = Int.random(in: 0...2)
-    private var appChoice: String {
-        handOptions[handChoice]
-    }
-    @State private var userAnswer = "🖐️"
+    private var userQuestion = ["Which option will win?", "Which option will lose?"]
+    private var handOptions = ["🖐️", "✊", "✌️"]
+    @State private var computerHandOptions = ["🖐️", "✊", "✌️"]
+    @State private var randomQuestion = Int.random(in: 0...1)
+    @State private var userAnswer = ""
     @State private var winOrLoseAlert = false
+    @State private var gameover = false
     @State private var score = 0
+    @State private var totalRounds = 0
     @State private var alertTitle = ""
     @State private var messageTitle = ""
     var body: some View {
         NavigationStack {
             VStack{
-                Text("Your oponents hand is chosen at random")
+                Text("The computer has chosen")
                     .font(.headline)
-                Text(appChoice)
+                Text(computerHandOptions[0])
                     .font(.system(size: 150))
                     .padding(.bottom, 50)
-                Text("What option do you think will win?")
+                Text(userQuestion[Int.random(in: 0...1)])
                     .font(.headline)
                 HStack(){
                     ForEach(handOptions, id: \.self){ number in
                         Button(number) {
+                            computerHandOptions.shuffle()
                             userAnswer = number
                             checkAnswer()
                         }
@@ -45,61 +47,31 @@ struct ContentView: View {
             .background(.regularMaterial)
             .background(.blue)
                 .navigationTitle("Rock Paper Scissors")
-        }.alert(alertTitle, isPresented: $winOrLoseAlert){
+        }.alert("Game Over", isPresented: $gameover){
+            Button("Start Over"){
+                restartGame()
+            }
+        } message: {
+            Text("Your final score is \(score)")
+        }
+        .alert(alertTitle, isPresented: $winOrLoseAlert){
             Button("Try Again!"){
-                
+                nextQuestion()
             }
         } message: {
             Text(messageTitle)
         }
     }
     func checkAnswer(){
-        if userAnswer == appChoice {
-            alertTitle = "This is a tie"
-            messageTitle = "You have not won or lost any points"
-            winOrLoseAlert = true
-        } else {
-            if userAnswer == "🖐️" && appChoice == "✊"{
-                alertTitle = "You have won!"
-                messageTitle = "You have scored a point!"
-                score += 1
-                winOrLoseAlert = true
-            } else if userAnswer == "🖐️" && appChoice == "✌️"{
-                alertTitle = "You have lost"
-                messageTitle = "You have lost a point!"
-                if score > 0 {
-                    score -= 1
-                }
-                winOrLoseAlert = true
-            } else if userAnswer == "✊" && appChoice == "🖐️"{
-                alertTitle = "You have lost"
-                messageTitle = "You have lost a point!"
-                if score > 0 {
-                    score -= 1
-                }
-                winOrLoseAlert = true
-            } else if userAnswer == "✊" && appChoice == "✌️" {
-                alertTitle = "You have won!"
-                messageTitle = "You have scored a point!"
-                winOrLoseAlert = true
-                score += 1
-            } else if userAnswer == "✌️" && appChoice == "✊" {
-                alertTitle = "You have lost"
-                messageTitle = "You have lost a point!"
-                if score > 0 {
-                    score -= 1
-                }
-                winOrLoseAlert = true
-            } else if userAnswer == "✌️" && appChoice == "🖐️"{
-                alertTitle = "You have won!"
-                messageTitle = "You have scored a point!"
-                score += 1
-                winOrLoseAlert = true
-            }
-        }
+        
+    }
+    
+    func nextQuestion() {
+        
     }
     func restartGame() {
-        
+        score = 0
+        totalRounds = 0
     }
     
 }
