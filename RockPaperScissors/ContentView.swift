@@ -15,7 +15,6 @@ struct ContentView: View {
     @State private var gameover = false
     @State private var score = 0
     @State private var totalRounds = 0
-    @State private var alertTitle = ""
     var body: some View {
         NavigationStack {
             VStack{
